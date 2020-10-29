@@ -1,0 +1,17 @@
+---
+namespace: moc-ops
+commonLabels:
+  app: moc-irc-bot
+
+resources:
+  - deployment.yml
+  - services.yml
+  - volumes.yml
+
+configMapGenerator:
+  - name: ircbot
+    envs:
+      - ircbot.env
+
+generators:
+  - secret-generator.yml

@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moc-irc-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moc-irc-bot
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      containers:
+
+        - name: supybot
+          image: larsks/mocbot:a1b360a5
+          volumeMounts:
+            - mountPath: /app/run
+              name: supybot-state
+          args:
+            - sh
+            - start-supybot.sh
+          env:
+            - name: SUPYBOT_OWNER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: ircbot
+                  key: SUPYBOT_OWNER_NAME
+            - name: SUPYBOT_OWNER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircbot
+                  key: SUPYBOT_OWNER_PASSWORD
+            - name: IRC_SASL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircbot
+                  key: IRC_SASL_PASSWORD
+            - name: IRC_CHANNELS
+              valueFrom:
+                configMapKeyRef:
+                  name: ircbot
+                  key: IRC_CHANNELS
+            - name: GH_SOCKET_URI
+              value: tcp://0.0.0.0:6680
+
+        - name: github-hook-receiver
+          image: larsks/mocbot:a1b360a5
+          volumeMounts:
+            - mountPath: /app/run
+              name: supybot-state
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+              name: gh-hook
+          env:
+            - name: GH_SOCKET_URI
+              value: tcp://127.0.0.1:6680
+            - name: GH_SECRET_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ircbot
+                  key: GH_SECRET_TOKEN
+
+      volumes:
+        - name: supybot-state
+          persistentVolumeClaim:
+            claimName: supybot-state-pvc
