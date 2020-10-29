@@ -7,6 +7,7 @@ resources:
   - deployment.yml
   - services.yml
   - volumes.yml
+  - routes.yml
 
 configMapGenerator:
   - name: ircbot
