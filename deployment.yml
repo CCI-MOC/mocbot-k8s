@@ -15,13 +15,13 @@ spec:
       containers:
 
         - name: supybot
-          image: larsks/mocbot:a1b360a5
-          volumeMounts:
-            - mountPath: /app/run
-              name: supybot-state
+          image: larsks/mocbot:f4035ea9
           args:
             - sh
             - start-supybot.sh
+          volumeMounts:
+            - mountPath: /app/run
+              name: supybot-state
           env:
             - name: SUPYBOT_OWNER_NAME
               valueFrom:
@@ -33,21 +33,26 @@ spec:
                 secretKeyRef:
                   name: ircbot
                   key: SUPYBOT_OWNER_PASSWORD
-            - name: IRC_SASL_PASSWORD
+            - name: SUPYBOT_SASL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: ircbot
-                  key: IRC_SASL_PASSWORD
-            - name: IRC_CHANNELS
+                  key: SUPYBOT_SASL_PASSWORD
+            - name: SUPYBOT_CHANNELS
               valueFrom:
                 configMapKeyRef:
                   name: ircbot
-                  key: IRC_CHANNELS
+                  key: SUPYBOT_CHANNELS
             - name: GH_SOCKET_URI
               value: tcp://0.0.0.0:6680
+            - name: SUPYBOT_REPLACE_CONFIG
+              value: "1"
 
         - name: github-hook-receiver
-          image: larsks/mocbot:a1b360a5
+          image: larsks/mocbot:f4035ea9
+          args:
+            - sh
+            - start-webhook-receiver.sh
           volumeMounts:
             - mountPath: /app/run
               name: supybot-state
