@@ -3,8 +3,6 @@ kind: Route
 metadata:
   name: gh-hook-receiver
 spec:
-  port:
-    targetPort: gh-hook
   tls:
     termination: edge
   to:
