@@ -15,7 +15,7 @@ spec:
       containers:
 
         - name: supybot
-          image: larsks/mocbot:f4035ea9
+          image: larsks/mocbot:9755b548
           args:
             - sh
             - start-supybot.sh
@@ -45,11 +45,9 @@ spec:
                   key: SUPYBOT_CHANNELS
             - name: GH_SOCKET_URI
               value: tcp://0.0.0.0:6680
-            - name: SUPYBOT_REPLACE_CONFIG
-              value: "1"
 
         - name: github-hook-receiver
-          image: larsks/mocbot:f4035ea9
+          image: larsks/mocbot:9755b548
           args:
             - sh
             - start-webhook-receiver.sh
